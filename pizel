@@ -1,0 +1,30 @@
+# Example using the TensorFlow library and image data augmentation
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# Load the dataset
+(train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
+
+# Convert pixel values to the range [0, 1]
+train_images = train_images.astype('float32') / 255.0
+test_images = test_images.astype('float32') / 255.0
+
+# Apply data augmentation
+datagen = ImageDataGenerator(rotation_range=20, width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True)
+datagen.fit(train_images)
+
+# Create a new dataset with augmented images
+augmented_images = []
+augmented_labels = []
+for x_batch, y_batch in datagen.flow(train_images, train_labels, batch_size=50000):
+    augmented_images.extend(x_batch)
+    augmented_labels.extend(y_batch)
+    break
+
+# Convert the augmented data to numpy arrays
+augmented_images = np.array(augmented_images)
+augmented_labels = np.array(augmented_labels)
+
+# Print the shape of the augmented data
+print("Augmented images shape:", augmented_images.shape)
+print("Augmented labels shape:", augmented_labels.shape)
